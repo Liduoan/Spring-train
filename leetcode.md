@@ -115,15 +115,123 @@ class Solution {
 
 
 
+## 20211204
+
+### [538. 把二叉搜索树转换为累加树](https://leetcode-cn.com/problems/convert-bst-to-greater-tree/)
+
+给出二叉 搜索 树的根节点，该树的节点值各不相同，请你将其转换为累加树（Greater Sum Tree），使每个节点 node 的新值等于原树中大于或等于 node.val 的值之和。
+
+提醒一下，二叉搜索树满足下列约束条件：
+
+节点的左子树仅包含键 小于 节点键的节点。
+节点的右子树仅包含键 大于 节点键的节点。
+左右子树也必须是二叉搜索树。
+
+---------
+
+这道题目的特点很简单，就是把右边的值给拿取到
+
+```java
+class Solution {
+    // 0 值很重要！
+    int sum = 0;
+
+    public TreeNode convertBST(TreeNode root) {
+        if (root != null) {
+            convertBST(root.right);
+            sum += root.val;
+            root.val = sum;
+            convertBST(root.left);
+        }
+        return root;
+    }
+}
+```
 
 
 
+### [208. 实现 Trie (前缀树)](https://leetcode-cn.com/problems/implement-trie-prefix-tree/)
 
+难度中等974收藏分享切换为英文接收动态反馈
 
+**[Trie](https://baike.baidu.com/item/字典树/9825209?fr=aladdin)**（发音类似 "try"）或者说 **前缀树** 是一种树形数据结构，用于高效地存储和检索字符串数据集中的键。这一数据结构有相当多的应用情景，例如自动补完和拼写检查。
 
+请你实现 Trie 类：
 
+- `Trie()` 初始化前缀树对象。
+- `void insert(String word)` 向前缀树中插入字符串 `word` 。
+- `boolean search(String word)` 如果字符串 `word` 在前缀树中，返回 `true`（即，在检索之前已经插入）；否则，返回 `false` 。
+- `boolean startsWith(String prefix)` 如果之前已经插入的字符串 `word` 的前缀之一为 `prefix` ，返回 `true` ；否则，返回 `false` 。
 
+-------------
 
+这是一个经典的前缀树，主要我们要理解前缀树的构成，每一个节点都是一个字符
+
+所以我们的处理就是看这个字符出现没有，没出现又要怎么处理。、
+
+直接看代码，这道题的难点在于确保理解好数据结构	
+
+```java
+class Trie {
+    // 主要的子节点属于
+    Trie[] chars;
+    // 判断这个是不是结尾
+    boolean isEnd;
+
+    // 初始化处理
+    public Trie() {
+        chars = new Trie[26];
+        isEnd = false;
+    }
+    
+    public void insert(String word) {
+        Trie root = this;
+        for(int i=0;i<word.length();i++) {
+            int index = word.charAt(i) - 'a';
+            // 一定记得 root.chars[index] 中的 root
+            // 不然会出现问题的
+            if(root.chars[index]==null) {
+                root.chars[index] = new Trie();
+            }
+            root = root.chars[index];
+        }
+        root.isEnd = true;
+    }
+    
+    public boolean search(String word) {
+        // 类似处理
+        Trie root = this;
+        for(int i=0;i<word.length();i++) {
+            int index = word.charAt(i) - 'a';
+            if(root.chars[index]==null) {
+                return false;
+            }
+            root = root.chars[index];
+        }
+        return root.isEnd;
+    }
+    
+    public boolean startsWith(String prefix) {
+        Trie root = this;
+        for(int i=0;i<prefix.length();i++) {
+            int index = prefix.charAt(i) - 'a';
+            if(root.chars[index]==null) {
+                return false;
+            }
+            root = root.chars[index];
+        }
+        return true;
+    }
+}
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * Trie obj = new Trie();
+ * obj.insert(word);
+ * boolean param_2 = obj.search(word);
+ * boolean param_3 = obj.startsWith(prefix);
+ */
+```
 
 
 
